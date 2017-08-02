@@ -1,6 +1,6 @@
-.container {
+/*.container {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;*/
 }
 
 .results {
@@ -21,7 +21,7 @@
   border: 1px solid black;
 }
 
-#cover {
+/*#cover {
   width: 150px;
   height: 150px;
-}
+}*/

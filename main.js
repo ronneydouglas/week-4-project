@@ -1,30 +1,44 @@
 
 // 1. First select and store the elements you'll be working with
-let audioPlayer = document.querySelector(".music-player");
-let form = document.querySelector(".search-form");
+let player = document.getElementById('music-player');
+let button = document.getElementById('music-search');
+let criteria = document.getElementById('search');
+
+button.addEventListener('click',function(event) {
+   let search = criteria.value;
+   fetch("https://api.soundcloud.com/tracks/?client_id=095fe1dcd09eb3d0e1d3d89c76f5618f&q=" + search)
+   .then(function(response, reject) {
+      response.json().then(function(data) {
+         let artist = data;
+         let criteria = document.querySelector('.results');
+
+         criteria.innerHTML = '';
+         for(let i = 0; i < artist.length; i++) {
+            let contentSection = document.createElement("div");
+            let artistName = document.createElement("p");
+            let title = document.createElement("p");
+            let albumArt = document.createElement("img");
+
+            artistName.setAttribute("class", "artist");
+            title.setAttribute("class", "song_title");
+            contentSection.setAttribute("class", "col-md-3 col-md-4");
+            albumArt.setAttribute("class", "img-responsive");
 
 
-// 2. Create your `onSubmit` event for getting the user's search term
-form.onsubmit = function onSubmit() {
-  console.log(form.search.value);
-  event.preventDefault();
-  searchSoundCloud(form.search.value);
-};
+            contentSection.appendChild(albumArt);
+            contentSection.appendChild(title);
+            contentSection.appendChild(artistName);
 
-// 3. Create your `fetch` request that is called after a submission
-function searchSoundCloud(title){
-  fetch("http://api.soundcloud.com/tracks/?client_id=8538a1744a7fdaa59981232897501e04&q=" + title)
-  .then(function(response){
-    response.json().then(function(data){
-      console.log(data); soundcloud(data);
-    })
-  })
-}
+            albumArt.src += artist[i].artwork_url;
+            title.innerHTML += artist[i].title;
+            artistName.innerHTML += artist[i].user.username;
 
-// 4. Create a way to append the fetch results to your page
-function soundcloud(data) {
-  let title = document.querySelector("#title");
-  title.innerHTML = data.soundcloud.tracks.title;
-}
+            criteria.appendChild(contentSection);
 
-// 5. Create a way to listen for a click that will play the song in the audio play
+            albumArt.addEventListener('click', function(event) {
+               player.src = artist[i].stream_url + "?client_id=095fe1dcd09eb3d0e1d3d89c76f5618f";
+            });
+         }
+      });
+   });
+});
